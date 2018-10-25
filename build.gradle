@@ -1,7 +1,7 @@
 buildscript {
     ext {
         springBootVersion = '2.0.5.RELEASE'
-        springFoxVersion = '2.5.0'
+        springFoxVersion = '2.9.2'
         junitVersion = '5.1.0'
     }
 
