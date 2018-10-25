@@ -1,0 +1,9 @@
+server:
+  port: ${PORT:8080}
+  error.whitelabel.enabled: false
+  servlet:
+    context-path: /banking
+
+logging:
+  level:
+    org.tonycox.banking: debug
