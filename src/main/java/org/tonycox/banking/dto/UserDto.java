@@ -4,6 +4,6 @@ import lombok.Value;
 
 @Value
 public class UserDto {
-    private String id;
+    private Long id;
     private String email;
 }

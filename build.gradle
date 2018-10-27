@@ -18,6 +18,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 group 'org.tonycox'
 version '0.0.1-SNAPSHOT'
@@ -43,11 +44,15 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-web:$springBootVersion"
     compile "org.springframework.boot:spring-boot-starter-actuator:$springBootVersion"
     compile "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
+    compile "org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion"
+
+    compile "com.h2database:h2:1.4.197"
 
     compile "io.springfox:springfox-swagger2:$springFoxVersion"
     compile "io.springfox:springfox-swagger-ui:$springFoxVersion"
 
-    compile 'org.projectlombok:lombok:1.18.2'
+    compile "org.projectlombok:lombok:1.16.22"
+    compile "org.jasypt:jasypt:1.9.2"
 
     testCompile("org.springframework.boot:spring-boot-starter-test:$springBootVersion") {
         exclude module: 'junit'

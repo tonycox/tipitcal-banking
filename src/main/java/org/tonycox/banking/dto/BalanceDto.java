@@ -4,5 +4,5 @@ import lombok.Value;
 
 @Value
 public class BalanceDto {
-    private Long amount;
+    private Double amount;
 }
