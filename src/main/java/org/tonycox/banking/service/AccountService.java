@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 @Transactional
 public class AccountService {
     private final AccountEventRepository repository;
-    private final ValidatorUtil validator;
+    private final ValidationUtil validator;
 
     public Boolean addEvent(AccountEventRequest event) {
         validator.validateUser(event);
@@ -41,6 +41,7 @@ public class AccountService {
         return collect.stream();
     }
 
+    // todo add snapshoting
     public BalanceProjection reduceEventsToBalance(Long userId) {
         return getAllEvents(userId)
                 .map(event -> {
@@ -56,5 +57,9 @@ public class AccountService {
                 .reduce(new BalanceProjection().setAmount(0D),
                         (left, right) -> new BalanceProjection()
                                 .setAmount(left.getAmount() + right.getAmount()));
+    }
+
+    public void clearAll() {
+        repository.deleteAll();
     }
 }

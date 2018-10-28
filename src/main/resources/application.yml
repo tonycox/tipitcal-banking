@@ -4,6 +4,46 @@ server:
   servlet:
     context-path: /banking/v1
 
+---
+spring:
+  profiles: dev-h2
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari.idle-timeout: 10000
+    url: jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    open-in-view: true
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+  h2.console.enabled: true
+
+logging:
+  path: ./logs
+  level:
+    root: INFO
+    org.tonycox.banking: DEBUG
+debug: false
+---
+spring:
+  profiles: test-h2
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari.idle-timeout: 10000
+    url: jdbc:h2:mem:testb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+
 logging:
   level:
-    org.tonycox.banking: debug
+    root: INFO
+    org.tonycox.banking: INFO
