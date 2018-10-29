@@ -29,4 +29,6 @@ public class AccountEvent {
     private AccountEventType eventType;
     @CreatedDate
     private LocalDateTime createdAt;
+    @Version
+    private Long version;
 }

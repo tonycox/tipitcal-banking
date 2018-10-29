@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/account")
 @RequiredArgsConstructor
 public class AccountController {
-
     private final AccountService service;
 
     @PostMapping("/event")

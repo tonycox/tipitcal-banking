@@ -58,23 +58,16 @@ class AccountControllerIT {
     }
 
     @Test
-    void concurrencyDepositAndWithdraw() throws InterruptedException {
-        BigDecimal expected = new BigDecimal(100D);
+    void concurrencyWithdraw() throws InterruptedException {
         rest.postForEntity("http://localhost:" + port + "/banking/v1/account/event",
-                deposit(expected), Object.class);
-        ForkJoinPool commonPool = ForkJoinPool.commonPool();
-        CountDownLatch latch = new CountDownLatch(100);
-        List<Boolean> bools = new ArrayList<>(100);
-        for (int i = 0; i < 50; i++) bools.add(true);
-        for (int i = 0; i < 50; i++) bools.add(false);
+                deposit(new BigDecimal(100)), Object.class);
+        ForkJoinPool commonPool = new ForkJoinPool(10);
+        CountDownLatch latch = new CountDownLatch(10);
+        List<Boolean> bools = new ArrayList<>(10);
+        for (int i = 0; i < 10; i++) bools.add(false);
         bools.stream().map(bool -> (Runnable) () -> {
-            if (bool) {
-                rest.postForObject("http://localhost:" + port + "/banking/v1/account/event",
-                        deposit(new BigDecimal(1D)), Object.class);
-            } else {
-                rest.postForObject("http://localhost:" + port + "/banking/v1/account/event",
-                        withdraw(new BigDecimal(1D)), Object.class);
-            }
+            rest.postForObject("http://localhost:" + port + "/banking/v1/account/event",
+                    withdraw(new BigDecimal(20)), Object.class);
             latch.countDown();
         }).parallel().forEach(commonPool::execute);
         latch.await();
@@ -84,7 +77,7 @@ class AccountControllerIT {
         BalanceDto body = entity.getBody();
         assertNotNull(body);
         BigDecimal amount = body.getAmount();
-        assertEquals(amount, expected);
+        assertEquals(BigDecimal.ZERO.compareTo(amount), 0);
     }
 
     private AccountEventRequest deposit(BigDecimal amount) {
