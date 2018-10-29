@@ -21,6 +21,7 @@ import org.tonycox.banking.request.SignUpRequest;
 import org.tonycox.banking.service.AccountService;
 import org.tonycox.banking.service.AuthService;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -50,7 +51,7 @@ class AccountControllerIT {
 
     @Test
     void cannotWithdrawIfLessBalance() {
-        AccountEventRequest request = withdraw(10D);
+        AccountEventRequest request = withdraw(new BigDecimal(10D));
         ResponseEntity<ErrorResponseDto> entity = rest.postForEntity("http://localhost:" + port + "/banking/v1/account/event",
                 request, ErrorResponseDto.class);
         assertEquals(entity.getStatusCode(), HttpStatus.BAD_REQUEST);
@@ -58,7 +59,7 @@ class AccountControllerIT {
 
     @Test
     void concurrencyDepositAndWithdraw() throws InterruptedException {
-        Double expected = 100D;
+        BigDecimal expected = new BigDecimal(100D);
         rest.postForEntity("http://localhost:" + port + "/banking/v1/account/event",
                 deposit(expected), Object.class);
         ForkJoinPool commonPool = ForkJoinPool.commonPool();
@@ -69,10 +70,10 @@ class AccountControllerIT {
         bools.stream().map(bool -> (Runnable) () -> {
             if (bool) {
                 rest.postForObject("http://localhost:" + port + "/banking/v1/account/event",
-                        deposit(1D), Object.class);
+                        deposit(new BigDecimal(1D)), Object.class);
             } else {
                 rest.postForObject("http://localhost:" + port + "/banking/v1/account/event",
-                        withdraw(1D), Object.class);
+                        withdraw(new BigDecimal(1D)), Object.class);
             }
             latch.countDown();
         }).parallel().forEach(commonPool::execute);
@@ -80,18 +81,20 @@ class AccountControllerIT {
         ResponseEntity<BalanceDto> entity = rest.getForEntity("http://localhost:" + port + "/banking/v1/account/{userId}/balance",
                 BalanceDto.class, user.getId());
         assertEquals(entity.getStatusCode(), HttpStatus.OK);
-        Double amount = entity.getBody().getAmount();
+        BalanceDto body = entity.getBody();
+        assertNotNull(body);
+        BigDecimal amount = body.getAmount();
         assertEquals(amount, expected);
     }
 
-    private AccountEventRequest deposit(Double amount) {
+    private AccountEventRequest deposit(BigDecimal amount) {
         return new AccountEventRequest()
                 .setAmount(amount)
                 .setEventType(AccountEventType.DEPOSIT)
                 .setUserId(user.getId());
     }
 
-    private AccountEventRequest withdraw(Double amount) {
+    private AccountEventRequest withdraw(BigDecimal amount) {
         return new AccountEventRequest()
                 .setAmount(amount)
                 .setEventType(AccountEventType.WITHDRAW)

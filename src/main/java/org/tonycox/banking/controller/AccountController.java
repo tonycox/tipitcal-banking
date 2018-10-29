@@ -3,7 +3,6 @@ package org.tonycox.banking.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.tonycox.banking.dto.BalanceDto;
 import org.tonycox.banking.dto.StatementDto;
@@ -18,7 +17,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/account")
 @RequiredArgsConstructor
-@Transactional
 public class AccountController {
 
     private final AccountService service;
@@ -39,7 +37,7 @@ public class AccountController {
     @GetMapping("/{userId}/statement")
     public List<StatementDto> getStatement(@PathVariable Long userId) {
         return service.getAllEvents(userId)
-                .map(event -> new StatementDto(event.getEventType().name(), event.getAmount().toString(), event.getCreatedAt()))
+                .map(event -> new StatementDto(event.getEventType().name(), event.getAmount(), event.getCreatedAt()))
                 .collect(Collectors.toList());
     }
 }

@@ -9,6 +9,7 @@ import org.tonycox.banking.model.BalanceProjection;
 import org.tonycox.banking.repository.UserRepository;
 import org.tonycox.banking.request.AccountEventRequest;
 
+import java.math.BigDecimal;
 import java.util.function.Supplier;
 
 @Service
@@ -24,13 +25,13 @@ public class ValidationUtil {
     }
 
     public void validateAmount(AccountEventRequest event, Supplier<BalanceProjection> sup) {
-        Double requestedAmount = event.getAmount();
-        if (requestedAmount <= 0) {
+        BigDecimal requestedAmount = event.getAmount();
+        if (requestedAmount.compareTo(new BigDecimal(0)) <= 0) {
             throw new ValidationException("amount must be grater than 0");
         }
         if (event.getEventType() == AccountEventType.WITHDRAW) {
             BalanceProjection balance = sup.get();
-            if (balance.getAmount() < requestedAmount) {
+            if (balance.getAmount().compareTo(requestedAmount) < 0) {
                 throw new ValidationException("requested amount is greater than balance");
             }
         }

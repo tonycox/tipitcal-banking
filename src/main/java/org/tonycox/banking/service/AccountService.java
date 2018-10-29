@@ -9,6 +9,7 @@ import org.tonycox.banking.model.BalanceProjection;
 import org.tonycox.banking.repository.AccountEventRepository;
 import org.tonycox.banking.request.AccountEventRequest;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,13 +51,13 @@ public class AccountService {
                         projection.setAmount(event.getAmount());
                     }
                     if (event.getEventType() == AccountEventType.WITHDRAW) {
-                        projection.setAmount(event.getAmount() * -1D);
+                        projection.setAmount(event.getAmount().negate());
                     }
                     return projection;
                 })
-                .reduce(new BalanceProjection().setAmount(0D),
+                .reduce(new BalanceProjection().setAmount(new BigDecimal(0D)),
                         (left, right) -> new BalanceProjection()
-                                .setAmount(left.getAmount() + right.getAmount()));
+                                .setAmount(left.getAmount().add(right.getAmount())));
     }
 
     public void clearAll() {
