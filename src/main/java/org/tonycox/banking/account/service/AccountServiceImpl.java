@@ -1,14 +1,16 @@
 package org.tonycox.banking.account.service;
 
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.tonycox.banking.model.AccountEvent;
-import org.tonycox.banking.model.AccountEventType;
-import org.tonycox.banking.model.BalanceProjection;
+import org.tonycox.banking.account.model.AccountEventDao;
+import org.tonycox.banking.account.model.AccountEventType;
+import org.tonycox.banking.account.service.dto.AccountEvent;
+import org.tonycox.banking.account.service.dto.BalanceProjection;
 import org.tonycox.banking.account.repository.AccountEventRepository;
-import org.tonycox.banking.request.AccountEventRequest;
-import org.tonycox.banking.service.ValidationUtil;
+import org.tonycox.banking.account.service.request.AccountEventServiceRequest;
+import org.tonycox.banking.account.service.util.ValidationUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,11 +24,12 @@ import java.util.stream.Stream;
 public class AccountServiceImpl implements AccountService {
     private final AccountEventRepository repository;
     private final ValidationUtil validator;
+    private final ModelMapper mapper;
 
-    public Boolean addEvent(AccountEventRequest event) {
+    public Boolean addEvent(AccountEventServiceRequest event) {
         validator.validateUser(event);
         validator.validateAmount(event, () -> reduceEventsToBalance(event.getUserId()));
-        AccountEvent model = new AccountEvent()
+        AccountEventDao model = new AccountEventDao()
                 .setUserId(event.getUserId())
                 .setEventType(event.getEventType())
                 .setAmount(event.getAmount());
@@ -35,7 +38,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public Stream<AccountEvent> getAllEvents(Long userId, LocalDateTime dateTime) {
-        return repository.findAllByUserIdAndCreatedAtLessThan(userId, dateTime);
+        return repository.findAllByUserIdAndCreatedAtLessThan(userId, dateTime)
+                .map(event -> mapper.map(event, AccountEvent.class));
     }
 
     public Stream<AccountEvent> getAllEvents(Long userId) {
