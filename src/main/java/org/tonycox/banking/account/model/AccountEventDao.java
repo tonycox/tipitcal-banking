@@ -7,7 +7,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -20,14 +19,15 @@ public class AccountEventDao {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotNull
+    @Column(name = "user_id")
     private Long userId;
-    @NotNull
+    @Column(name = "amount")
     private BigDecimal amount;
-    @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "event_type")
     private AccountEventType eventType;
     @CreatedDate
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Version
     private Long version;

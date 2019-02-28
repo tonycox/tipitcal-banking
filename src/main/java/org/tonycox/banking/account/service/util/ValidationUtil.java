@@ -3,7 +3,6 @@ package org.tonycox.banking.account.service.util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.tonycox.banking.account.api.request.AccountEventRequest;
 import org.tonycox.banking.account.service.request.AccountEventServiceRequest;
 import org.tonycox.banking.auth.repository.UserRepository;
 import org.tonycox.banking.core.exception.ValidationException;
@@ -17,23 +16,27 @@ import java.util.function.Supplier;
 @Transactional
 @RequiredArgsConstructor
 public class ValidationUtil {
+    private static final int AMOUNT_SCALE = 2;
     private final UserRepository userRepository;
 
     public void validateUser(AccountEventServiceRequest event) {
         if (!userRepository.existsById(event.getUserId())) {
-            throw new ValidationException("there is no such user");
+            throw new ValidationException("UserDao with id: " + event.getUserId() + "doesn't exist.");
         }
     }
 
     public void validateAmount(AccountEventServiceRequest event, Supplier<BalanceProjection> sup) {
         BigDecimal requestedAmount = event.getAmount();
+        if (event.getAmount().scale() > AMOUNT_SCALE) {
+            throw new ValidationException("Scale of the amount is bigger then " + AMOUNT_SCALE + " digits after dot.");
+        }
         if (requestedAmount.compareTo(new BigDecimal(0)) <= 0) {
-            throw new ValidationException("amount must be grater than 0");
+            throw new ValidationException("Amount must be grater than zero.");
         }
         if (event.getEventType() == AccountEventType.WITHDRAW) {
             BalanceProjection balance = sup.get();
             if (balance.getAmount().compareTo(requestedAmount) < 0) {
-                throw new ValidationException("requested amount is greater than balance");
+                throw new ValidationException("Requested amount is greater than balance.");
             }
         }
     }

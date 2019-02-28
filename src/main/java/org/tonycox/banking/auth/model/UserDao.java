@@ -3,21 +3,18 @@ package org.tonycox.banking.auth.model;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 
 @Data
 @Entity
+@Table(name = "users")
 @Accessors(chain = true)
-public class User {
+public class UserDao {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotNull
+    @Column(name = "email", nullable = false)
     private String email;
-    @NotNull
+    @Column(name = "password", nullable = false)
     private String password;
 }

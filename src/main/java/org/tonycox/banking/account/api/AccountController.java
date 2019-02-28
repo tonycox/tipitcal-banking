@@ -11,7 +11,9 @@ import org.tonycox.banking.account.api.dto.StatementDto;
 import org.tonycox.banking.account.service.dto.BalanceProjection;
 import org.tonycox.banking.account.api.request.AccountEventRequest;
 import org.tonycox.banking.account.service.request.AccountEventServiceRequest;
+import org.tonycox.banking.core.exception.HandlingEventException;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,10 +26,10 @@ public class AccountController {
     private final ModelMapper mapper;
 
     @PostMapping("/event")
-    public ResponseEntity handleEvent(@RequestBody AccountEventRequest event) {
+    public ResponseEntity handleEvent(@RequestBody @Valid AccountEventRequest event) {
         return Optional.of(service.addEvent(mapper.map(event, AccountEventServiceRequest.class)))
-                .map(bool -> new ResponseEntity<>(HttpStatus.NO_CONTENT))
-                .orElseThrow(RuntimeException::new);
+                .map(bool -> new ResponseEntity<>(HttpStatus.ACCEPTED))
+                .orElseThrow(() -> new HandlingEventException("event " + event.toString() + " cannot be applied."));
     }
 
     @GetMapping("/{userId}/balance")
