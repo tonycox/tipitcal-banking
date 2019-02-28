@@ -1,7 +1,7 @@
 package org.tonycox.banking.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.jasypt.util.password.BasicPasswordEncryptor;
+import org.jasypt.util.password.PasswordEncryptor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ import org.tonycox.banking.auth.service.request.SignUpServiceRequest;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository repository;
     private final ModelMapper mapper;
-    private final BasicPasswordEncryptor encryptor = new BasicPasswordEncryptor();
+    private final PasswordEncryptor encryptor;
 
     public SignedUser signUp(SignUpServiceRequest request) {
         String email = request.getEmail();
