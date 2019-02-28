@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.tonycox.banking.auth.api.dto.UserDto;
 import org.tonycox.banking.auth.api.request.SignUpRequest;
-import org.tonycox.banking.auth.model.UserDao;
 import org.tonycox.banking.auth.service.AuthService;
+import org.tonycox.banking.auth.service.dto.SignedUser;
 import org.tonycox.banking.auth.service.request.SignUpServiceRequest;
 
 import javax.validation.Valid;
@@ -23,7 +23,7 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public UserDto signUp(@RequestBody @Valid SignUpRequest request) {
-        UserDao user = service.signUp(mapper.map(request, SignUpServiceRequest.class));
+        SignedUser user = service.signUp(mapper.map(request, SignUpServiceRequest.class));
         return new UserDto(user.getId(), user.getEmail());
     }
 }

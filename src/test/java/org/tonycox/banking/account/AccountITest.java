@@ -1,4 +1,4 @@
-package org.tonycox.banking.core.api;
+package org.tonycox.banking.account;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,9 +13,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.tonycox.banking.account.api.dto.BalanceDto;
 import org.tonycox.banking.account.model.AccountEventType;
 import org.tonycox.banking.account.api.request.AccountEventRequest;
-import org.tonycox.banking.account.service.AccountServiceImpl;
-import org.tonycox.banking.auth.model.UserDao;
+import org.tonycox.banking.account.service.AccountService;
 import org.tonycox.banking.auth.service.AuthService;
+import org.tonycox.banking.auth.service.dto.SignedUser;
 import org.tonycox.banking.auth.service.request.SignUpServiceRequest;
 
 import java.math.BigDecimal;
@@ -28,8 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AccountControllerIT {
+class AccountITest {
     private static final String HOST = "http://localhost:";
 
     @LocalServerPort
@@ -39,8 +38,8 @@ class AccountControllerIT {
     @Autowired
     private AuthService userService;
     @Autowired
-    private AccountServiceImpl accountService;
-    private UserDao user;
+    private AccountService accountService;
+    private SignedUser user;
 
     @BeforeEach
     void setUp() {
@@ -49,6 +48,7 @@ class AccountControllerIT {
 
     @AfterEach
     void tearDown() {
+        userService.removeUser(user.getId());
         accountService.deleteAll();
     }
 

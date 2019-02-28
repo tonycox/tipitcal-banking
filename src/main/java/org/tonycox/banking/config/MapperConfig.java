@@ -10,6 +10,8 @@ import org.tonycox.banking.account.model.AccountEventDao;
 import org.tonycox.banking.account.service.dto.AccountEvent;
 import org.tonycox.banking.account.service.request.AccountEventServiceRequest;
 import org.tonycox.banking.auth.api.request.SignUpRequest;
+import org.tonycox.banking.auth.model.UserDao;
+import org.tonycox.banking.auth.service.dto.SignedUser;
 import org.tonycox.banking.auth.service.request.SignUpServiceRequest;
 
 @Configuration
@@ -21,6 +23,7 @@ public class MapperConfig {
         eventRequestToServiceRequest(modelMapper);
         eventDaoToEvent(modelMapper);
         eventToEventDto(modelMapper);
+        userDaoToSignedUser(modelMapper);
         return modelMapper;
     }
 
@@ -57,5 +60,12 @@ public class MapperConfig {
         typeMap.addMapping(AccountEvent::getUserId, AccountEventDto::setUserId);
         typeMap.addMapping(AccountEvent::getId, AccountEventDto::setEventId);
         typeMap.addMapping(AccountEvent::getCreatedAt, AccountEventDto::setCreatedAt);
+    }
+
+    private void userDaoToSignedUser(ModelMapper modelMapper) {
+        TypeMap<UserDao, SignedUser> typeMap = modelMapper
+                .typeMap(UserDao.class, SignedUser.class);
+        typeMap.addMapping(UserDao::getId, SignedUser::setId);
+        typeMap.addMapping(UserDao::getEmail, SignedUser::setEmail);
     }
 }
