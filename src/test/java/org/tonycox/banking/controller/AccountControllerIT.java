@@ -18,7 +18,7 @@ import org.tonycox.banking.model.AccountEventType;
 import org.tonycox.banking.model.User;
 import org.tonycox.banking.request.AccountEventRequest;
 import org.tonycox.banking.request.SignUpRequest;
-import org.tonycox.banking.service.AccountService;
+import org.tonycox.banking.account.service.AccountServiceImpl;
 import org.tonycox.banking.service.AuthService;
 
 import java.math.BigDecimal;
@@ -41,7 +41,7 @@ class AccountControllerIT {
     @Autowired
     private AuthService userService;
     @Autowired
-    private AccountService accountService;
+    private AccountServiceImpl accountService;
     private User user;
 
     @BeforeEach
@@ -96,6 +96,6 @@ class AccountControllerIT {
 
     @AfterEach
     void tearDown() {
-        accountService.clearAll();
+        accountService.deleteAll();
     }
 }

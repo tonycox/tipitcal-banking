@@ -1,4 +1,4 @@
-package org.tonycox.banking.repository;
+package org.tonycox.banking.account.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

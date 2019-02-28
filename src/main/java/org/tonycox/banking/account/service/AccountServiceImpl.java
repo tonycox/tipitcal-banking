@@ -1,4 +1,4 @@
-package org.tonycox.banking.service;
+package org.tonycox.banking.account.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -6,8 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.tonycox.banking.model.AccountEvent;
 import org.tonycox.banking.model.AccountEventType;
 import org.tonycox.banking.model.BalanceProjection;
-import org.tonycox.banking.repository.AccountEventRepository;
+import org.tonycox.banking.account.repository.AccountEventRepository;
 import org.tonycox.banking.request.AccountEventRequest;
+import org.tonycox.banking.service.ValidationUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class AccountService {
+public class AccountServiceImpl implements AccountService {
     private final AccountEventRepository repository;
     private final ValidationUtil validator;
 
@@ -60,7 +61,7 @@ public class AccountService {
                                 .setAmount(left.getAmount().add(right.getAmount())));
     }
 
-    public void clearAll() {
+    public void deleteAll() {
         repository.deleteAll();
     }
 }

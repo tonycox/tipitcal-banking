@@ -1,14 +1,14 @@
-package org.tonycox.banking.controller;
+package org.tonycox.banking.account.api;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.tonycox.banking.account.service.AccountService;
 import org.tonycox.banking.dto.BalanceDto;
 import org.tonycox.banking.dto.StatementDto;
 import org.tonycox.banking.model.BalanceProjection;
 import org.tonycox.banking.request.AccountEventRequest;
-import org.tonycox.banking.service.AccountService;
 
 import java.util.List;
 import java.util.Optional;
