@@ -4,7 +4,6 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.tonycox.banking.account.model.AccountEventType;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -15,6 +14,6 @@ public class AccountEventRequest {
     private Long userId;
     @NotNull
     private BigDecimal amount;
-    @NotEmpty
+    @NotNull
     private AccountEventType eventType;
 }

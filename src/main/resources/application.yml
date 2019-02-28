@@ -6,7 +6,7 @@ server:
 
 ---
 spring:
-  profiles: dev-h2
+  profiles: dev
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     hikari.idle-timeout: 10000
@@ -30,7 +30,7 @@ logging:
 debug: false
 ---
 spring:
-  profiles: test-h2
+  profiles: test
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     hikari.idle-timeout: 10000
