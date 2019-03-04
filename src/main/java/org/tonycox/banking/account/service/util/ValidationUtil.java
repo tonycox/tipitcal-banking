@@ -16,7 +16,11 @@ import java.util.function.Supplier;
 @Transactional
 @RequiredArgsConstructor
 public class ValidationUtil {
+    /**
+     * Count of digits after dot.
+     */
     private static final int AMOUNT_SCALE = 2;
+
     private final UserRepository userRepository;
 
     public void validateUser(Long userId) {
@@ -29,6 +33,10 @@ public class ValidationUtil {
         validateUser(event.getUserId());
     }
 
+    /**
+     * @param event is validated
+     * @param sup   is lazy function to get balance if needed.
+     */
     public void validateAmount(AccountEventServiceRequest event, Supplier<BalanceProjection> sup) {
         BigDecimal requestedAmount = event.getAmount();
         if (event.getAmount().scale() > AMOUNT_SCALE) {
