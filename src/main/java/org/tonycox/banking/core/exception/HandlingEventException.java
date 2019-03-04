@@ -8,5 +8,4 @@ public class HandlingEventException extends RuntimeException {
     public HandlingEventException(String message) {
         super(message);
     }
-
 }

@@ -13,7 +13,6 @@ import org.tonycox.banking.account.service.request.AccountEventServiceRequest;
 import org.tonycox.banking.account.service.util.ValidationUtil;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,14 +35,6 @@ public class AccountServiceImpl implements AccountService {
         return true;
     }
 
-    public Stream<AccountEvent> getAllEvents(Long userId, LocalDateTime dateTime) {
-        validator.validateUser(userId);
-        return repository.findAllByUserIdAndCreatedAtLessThan(userId, dateTime)
-                .map(event -> mapper.map(event, AccountEvent.class))
-                .collect(Collectors.toList())
-                .stream();
-    }
-
     public Stream<AccountEvent> getAllEvents(Long userId) {
         validator.validateUser(userId);
         return repository.findAllByUserId(userId)
@@ -52,7 +43,6 @@ public class AccountServiceImpl implements AccountService {
                 .stream();
     }
 
-    // todo add snapshoting
     public BalanceProjection reduceEventsToBalance(Long userId) {
         return getAllEvents(userId)
                 .map(event -> {
@@ -68,9 +58,5 @@ public class AccountServiceImpl implements AccountService {
                 .reduce(new BalanceProjection().setAmount(new BigDecimal(0D)),
                         (left, right) -> new BalanceProjection()
                                 .setAmount(left.getAmount().add(right.getAmount())));
-    }
-
-    public void deleteAll() {
-        repository.deleteAll();
     }
 }

@@ -10,11 +10,7 @@ import java.util.stream.Stream;
 public interface AccountService {
     Boolean addEvent(AccountEventServiceRequest event);
 
-    Stream<AccountEvent> getAllEvents(Long userId, LocalDateTime dateTime);
-
     Stream<AccountEvent> getAllEvents(Long userId);
 
     BalanceProjection reduceEventsToBalance(Long userId);
-
-    void deleteAll();
 }
