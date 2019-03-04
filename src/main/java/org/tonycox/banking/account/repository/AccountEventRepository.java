@@ -13,4 +13,7 @@ import java.util.stream.Stream;
 public interface AccountEventRepository extends JpaRepository<AccountEventDao, Long> {
     @Lock(LockModeType.PESSIMISTIC_READ)
     Stream<AccountEventDao> findAllByUserIdAndCreatedAtLessThan(Long userId, LocalDateTime createdAt);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Stream<AccountEventDao> findAllByUserId(Long userId);
 }

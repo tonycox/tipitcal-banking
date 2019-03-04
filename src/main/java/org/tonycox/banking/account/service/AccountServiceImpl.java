@@ -14,7 +14,6 @@ import org.tonycox.banking.account.service.util.ValidationUtil;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,13 +37,19 @@ public class AccountServiceImpl implements AccountService {
     }
 
     public Stream<AccountEvent> getAllEvents(Long userId, LocalDateTime dateTime) {
+        validator.validateUser(userId);
         return repository.findAllByUserIdAndCreatedAtLessThan(userId, dateTime)
-                .map(event -> mapper.map(event, AccountEvent.class));
+                .map(event -> mapper.map(event, AccountEvent.class))
+                .collect(Collectors.toList())
+                .stream();
     }
 
     public Stream<AccountEvent> getAllEvents(Long userId) {
-        List<AccountEvent> collect = getAllEvents(userId, LocalDateTime.MIN).collect(Collectors.toList());
-        return collect.stream();
+        validator.validateUser(userId);
+        return repository.findAllByUserId(userId)
+                .map(event -> mapper.map(event, AccountEvent.class))
+                .collect(Collectors.toList())
+                .stream();
     }
 
     // todo add snapshoting

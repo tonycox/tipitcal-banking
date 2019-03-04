@@ -48,6 +48,8 @@ dependencies {
 
     compile "org.modelmapper:modelmapper:2.3.2"
 
+    compile "com.h2database:h2:1.4.198"
+    compile "com.zaxxer:HikariCP:3.3.1"
     compile "org.mariadb.jdbc:mariadb-java-client:2.4.0"
     compile "ch.vorburger.mariaDB4j:mariaDB4j-springboot:2.4.0"
 
