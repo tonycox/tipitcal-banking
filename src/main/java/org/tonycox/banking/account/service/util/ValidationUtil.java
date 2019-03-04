@@ -19,18 +19,22 @@ public class ValidationUtil {
     private static final int AMOUNT_SCALE = 2;
     private final UserRepository userRepository;
 
-    public void validateUser(AccountEventServiceRequest event) {
-        if (!userRepository.existsById(event.getUserId())) {
-            throw new ValidationException("UserDao with id: " + event.getUserId() + "doesn't exist.");
+    public void validateUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new ValidationException("UserDao with id: " + userId + " doesn't exist.");
         }
+    }
+
+    public void validateUser(AccountEventServiceRequest event) {
+        validateUser(event.getUserId());
     }
 
     public void validateAmount(AccountEventServiceRequest event, Supplier<BalanceProjection> sup) {
         BigDecimal requestedAmount = event.getAmount();
         if (event.getAmount().scale() > AMOUNT_SCALE) {
-            throw new ValidationException("Scale of the amount is bigger then " + AMOUNT_SCALE + " digits after dot.");
+            throw new ValidationException("Scale of the amount is bigger than " + AMOUNT_SCALE + " digits after dot.");
         }
-        if (requestedAmount.compareTo(new BigDecimal(0)) <= 0) {
+        if (requestedAmount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new ValidationException("Amount must be grater than zero.");
         }
         if (event.getEventType() == AccountEventType.WITHDRAW) {
